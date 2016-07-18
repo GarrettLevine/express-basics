@@ -5,8 +5,13 @@ const posts = require('./mock/posts.json');
 
 const app = express();
 
+app.use('/static', express.static(`${__dirname}/public`));
+
+app.set('view engine', 'jade');
+app.set('views', `${__dirname}/templates`);
+
 app.get('/', (req, res) => {
-  res.send('<h1>I REALLY love Express!</h1>');
+  res.render('index');
 });
 
 app.get('/blog/:title?', (req, res) => {
@@ -15,9 +20,10 @@ app.get('/blog/:title?', (req, res) => {
     res.status(503);
     res.send('This page is under construction');
   } else {
-    const post = posts[title];
-
-    res.send(post);
+    const post = posts[title] || {};
+    res.render('post', { 
+      post,
+    });
   }
 });
 
