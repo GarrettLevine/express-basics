@@ -11,14 +11,24 @@ app.set('view engine', 'jade');
 app.set('views', `${__dirname}/templates`);
 
 app.get('/', (req, res) => {
-  res.render('index');
+  const path = req.path;
+  
+  res.render('index', {
+    path
+  });
 });
 
 app.get('/blog/:title?', (req, res) => {
   const title = req.params.title;
   if ( title === undefined ) {
     res.status(503);
-    res.send('This page is under construction');
+    const postsList = Object.keys(posts).map( key => {
+      return posts[key]; 
+    });
+    console.log(postsList);
+    res.render('blog', {
+      posts: postsList,
+    });
   } else {
     const post = posts[title] || {};
     res.render('post', { 
